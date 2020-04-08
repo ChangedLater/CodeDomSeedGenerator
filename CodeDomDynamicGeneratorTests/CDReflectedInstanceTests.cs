@@ -24,12 +24,12 @@ namespace CodeDomDynamicGeneratorTests
 				IntProp = 5,
 				StringProp = "A String"
 			};
+			var expectedType = toBeReflected.GetType();
 
 			var reflectedInstance = new CDReflectedInstance(toBeReflected);
 
-			Assert.Equal(nameof(toBeReflected), reflectedInstance.className);
-			Assert.Equal("CodeDomDynamicGenerator", reflectedInstance.nameSpace);
-
+			Assert.Equal(expectedType.Name, reflectedInstance.className);
+			Assert.Equal(expectedType.Namespace, reflectedInstance.nameSpace);
 		}
 
 		[Fact]

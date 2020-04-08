@@ -21,7 +21,15 @@ namespace CodeDomDynamicGenerator
 
 		private void ReflectInstance(object objectToReflect)
 		{
-			throw new NotImplementedException();
+			var typeOfObject = objectToReflect.GetType();
+			className = typeOfObject.Name;
+			nameSpace = typeOfObject.Namespace;
+			foreach( var prop in typeOfObject.GetProperties())
+			{
+				var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+				var value = prop.GetValue(objectToReflect, null);
+				AddProperty(prop.Name, propertyType, value);
+			}
 		}
 
 		private void AddProperty(string propertyName, Type t, object value)
