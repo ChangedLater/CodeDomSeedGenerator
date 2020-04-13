@@ -73,6 +73,27 @@ namespace CodeDomDynamicGeneratorTests
 		}
 
 		[Fact]
+		public void CDReflectedInstance_ReflectInstance_EnumReflected()
+		{
+			var expectedName = "EnumProp";
+			var expectedType = typeof(TestEnum);
+			var expectedValue = TestEnum.Value1;
+
+			var toBeReflected = new TestClass()
+			{
+				EnumProp = expectedValue,
+			};
+
+			var reflectedInstance = new CDReflectedInstance(toBeReflected);
+
+			var propertyList = reflectedInstance.propertyValues;
+			Assert.True(propertyList.ContainsKey(expectedName));
+			var valueTuple = propertyList[expectedName];
+			Assert.Equal(expectedType, valueTuple.Item1);
+			Assert.Equal(expectedValue, valueTuple.Item2);
+		}
+
+		[Fact]
 		public void CDReflectedInstance_ReflectInstance_ExcludesNonPublicProps()
 		{
 			var toBeReflected = new TestClass()

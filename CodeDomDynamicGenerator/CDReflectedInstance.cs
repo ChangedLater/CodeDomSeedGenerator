@@ -68,6 +68,7 @@ namespace CodeDomDynamicGenerator
 			var propType = prop.PropertyType;
 			// check that its primitive(ish)
 			var propTypeIsWritable = propType.IsPrimitive
+				|| propType.IsEnum
 				|| propType == typeof(string)
 				|| propType == typeof(decimal)
 				|| propType == typeof(DateTime)
