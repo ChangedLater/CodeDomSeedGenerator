@@ -75,5 +75,27 @@ namespace CodeDomDynamicGeneratorTests
 				Assert.Contains(expectedContents, actual);
 			}
 		}
+
+		[Fact]
+		public void CDCompileUnitGenerator_AddInstanceContainsInstance()
+		{
+			var cdCompile = new CDCompileUnitGenerator(nameSpace);
+			var targetClass = cdCompile.AddClass(className);
+			cdCompile.AddEntryPoint(targetClass);
+
+			var testClass = new TestClass();
+			var reflectedInstance = new CDReflectedInstance(testClass);
+			var instanceGenerator = new CDInstanceGenerator(reflectedInstance);
+
+			cdCompile.AddInstance(instanceGenerator);
+
+			using (StringWriter tw = new StringWriter())
+			{
+				cdCompile.WriteToStream(tw);
+				var actual = tw.ToString();
+				var expectedContents = $"new {testClass.GetType().Name}()";
+				Assert.Contains(expectedContents, actual);
+			}
+		}
 	}
 }

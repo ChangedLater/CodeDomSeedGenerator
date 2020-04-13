@@ -12,6 +12,8 @@ namespace CodeDomDynamicGenerator
 	{
 		private CodeCompileUnit targetUnit;
 		private CodeNamespace codeNamespace;
+		private CodeEntryPointMethod mainMethod;
+
 		public CDCompileUnitGenerator(string nameSpace)
 		{
 			targetUnit = new CodeCompileUnit();
@@ -39,14 +41,25 @@ namespace CodeDomDynamicGenerator
 			}
 		}
 
+		private void AddStatementsToMain(List<CodeStatement> statements)
+		{
+			if (statements != null)
+			{
+				mainMethod.Statements.AddRange(statements.ToArray());
+			}
+		}
+
+		public void AddInstance(CDInstanceGenerator instanceGen)
+		{
+			AddStatementsToMain(instanceGen.statements);
+			AddImports(instanceGen.imports.ToArray());
+		}
+
 		public void AddEntryPoint(CodeTypeDeclaration targetClass, List<CodeStatement> statements = null)
 		{
-			CodeEntryPointMethod start = new CodeEntryPointMethod();
-			if( statements != null)
-			{
-				start.Statements.AddRange(statements.ToArray());
-			}
-			targetClass.Members.Add(start);
+			mainMethod = new CodeEntryPointMethod();
+			AddStatementsToMain(statements);
+			targetClass.Members.Add(mainMethod);
 		}
 
 		public void WriteToStream(TextWriter writer)
