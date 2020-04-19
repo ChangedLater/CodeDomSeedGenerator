@@ -18,6 +18,9 @@ namespace CodeDomDynamicGenerator
 	{
 		private string className { get; set; }
 		private string nameSpace { get; set; }
+		/// <summary>
+		/// Dictionary mapping propery Name to its type and Value.
+		/// </summary>
 		private Dictionary<string, Tuple<Type, object>> propertyValues;
 		internal CDReflectedInstance(object objectToReflect)
 		{
