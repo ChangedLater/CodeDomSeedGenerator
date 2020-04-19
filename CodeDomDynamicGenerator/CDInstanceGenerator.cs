@@ -1,34 +1,35 @@
-﻿using System;
+﻿using CodeDomDynamicGenerator.Interfaces;
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace CodeDomDynamicGenerator
 {
-	public class CDInstanceGenerator
+	internal class CDInstanceGenerator : ICDInstanceGenerator
 	{
 		private static int instanceCounter = 0;
 		private string className;
 		private string instanceName;
-		public List<CodeStatement> statements { get; private set; }
-		public List<string> imports { get; set; }
+		private List<CodeStatement> statements { get; set; }
+		private List<string> imports { get; set; }
 
-		public CDInstanceGenerator(string className, string instanceName) : this()
+		internal CDInstanceGenerator(string className, string instanceName) : this()
 		{
 			this.className = className;
 			this.instanceName = instanceName;
 			CreateInstance();
 		}
 
-		public CDInstanceGenerator(CDReflectedInstance instanceToGenerate) : this()
+		internal CDInstanceGenerator(ICDReflectedInstance instanceToGenerate) : this()
 		{
-			className = instanceToGenerate.className;
+			className = instanceToGenerate.GetClassName();
 			// unique instance name
 			this.instanceName = className.ToLower() + (instanceCounter++);
 			CreateInstance();
-			imports.Add(instanceToGenerate.nameSpace);
+			imports.Add(instanceToGenerate.GetClassName());
 
-			foreach( var prop in instanceToGenerate.propertyValues)
+			foreach( var prop in instanceToGenerate.GetPropertyValues())
 			{
 				var propName = prop.Key;
 				var propValue = prop.Value.Item2;
@@ -59,7 +60,7 @@ namespace CodeDomDynamicGenerator
 			statements.Add(declaration);
 		}
 
-		public CodeAssignStatement CreatePropertyAssignment(string propertyName, object value)
+		internal CodeAssignStatement CreatePropertyAssignment(string propertyName, object value)
 		{
 			var variableReference = new CodeVariableReferenceExpression(instanceName);
 	
@@ -93,6 +94,16 @@ namespace CodeDomDynamicGenerator
 			);
 			statements.Add(assignmentStatement);
 			return assignmentStatement;
+		}
+
+		public IEnumerable<CodeStatement> GetStatements()
+		{
+			return statements;
+		}
+
+		public IEnumerable<string> GetImports()
+		{
+			return imports;
 		}
 	}
 }

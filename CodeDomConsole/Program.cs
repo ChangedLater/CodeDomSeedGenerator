@@ -48,7 +48,7 @@ namespace CodeDomConsole
 			var instanceGen = new CDInstanceGenerator("TestClass", "test");
 			instanceGen.CreatePropertyAssignment("Value", 2.0);
 
-			compileUnit.AddEntryPoint(target, instanceGen.statements);
+			compileUnit.AddEntryPoint(target, instanceGen.GetStatements());
 
 			string fileName = GetPathForClass(className);
 			using (var sw = new StreamWriter(fileName))

@@ -1,20 +1,25 @@
-﻿using System;
+﻿using CodeDomDynamicGenerator.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
+[assembly: InternalsVisibleTo("CodeDomDynamicGeneratorTests")]
+[assembly: InternalsVisibleTo("CodeDomConsole")]
 namespace CodeDomDynamicGenerator
 {
 	/// <summary>
 	/// This class is intended to extract the required information from an object to 
 	/// enable creation of that object via CodeDom
 	/// </summary>
-	public class CDReflectedInstance
+
+	internal class CDReflectedInstance : ICDReflectedInstance
 	{
-		public string className { get; set; }
-		public string nameSpace { get; set; }
-		public Dictionary<string, Tuple<Type, object>> propertyValues;
-		public CDReflectedInstance(object objectToReflect)
+		private string className { get; set; }
+		private string nameSpace { get; set; }
+		private Dictionary<string, Tuple<Type, object>> propertyValues;
+		internal CDReflectedInstance(object objectToReflect)
 		{
 			propertyValues = new Dictionary<string, Tuple<Type, object>>();
 			ReflectInstance(objectToReflect);
@@ -31,7 +36,7 @@ namespace CodeDomDynamicGenerator
 				if(!PropertyShouldBeWritten(prop)) continue;
 				var value = prop.GetValue(objectToReflect, null);
 				var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-				// TODO - this could have significant performance imapacts as its using refelction for every property...
+				// TODO - this could have significant performance impacts as its using refelction for every property...
 				// dont write this property if the value is the default for that type
 				var method = typeof(CDReflectedInstance).GetMethod("ValueIsDefault", BindingFlags.NonPublic | BindingFlags.Instance);
 				var generic = method.MakeGenericMethod(propertyType);
@@ -85,6 +90,21 @@ namespace CodeDomDynamicGenerator
 		private void AddProperty(string propertyName, Type t, object value)
 		{
 			propertyValues.Add(propertyName, new Tuple<Type, object>( t, value));
+		}
+
+		public string GetClassName()
+		{
+			return className;
+		}
+
+		public string GetNameSpace()
+		{
+			return nameSpace;
+		}
+
+		public Dictionary<string, Tuple<Type, object>> GetPropertyValues()
+		{
+			return propertyValues;
 		}
 	}
 }

@@ -28,8 +28,8 @@ namespace CodeDomDynamicGeneratorTests
 
 			var reflectedInstance = new CDReflectedInstance(toBeReflected);
 
-			Assert.Equal(expectedType.Name, reflectedInstance.className);
-			Assert.Equal(expectedType.Namespace, reflectedInstance.nameSpace);
+			Assert.Equal(expectedType.Name, reflectedInstance.GetClassName());
+			Assert.Equal(expectedType.Namespace, reflectedInstance.GetNameSpace());
 		}
 
 		[Fact]
@@ -44,7 +44,7 @@ namespace CodeDomDynamicGeneratorTests
 
 			var reflectedInstance = new CDReflectedInstance(toBeReflected);
 
-			var propertyList = reflectedInstance.propertyValues;
+			var propertyList = reflectedInstance.GetPropertyValues();
 			Assert.True(propertyList.ContainsKey("DoubleProp"));
 			Assert.True(propertyList.ContainsKey("IntProp"));
 			Assert.True(propertyList.ContainsKey("StringProp"));
@@ -65,7 +65,7 @@ namespace CodeDomDynamicGeneratorTests
 
 			var reflectedInstance = new CDReflectedInstance(toBeReflected);
 
-			var propertyList = reflectedInstance.propertyValues;
+			var propertyList = reflectedInstance.GetPropertyValues();
 			Assert.True(propertyList.ContainsKey(expectedName));
 			var valueTuple = propertyList[expectedName];
 			Assert.Equal(expectedType, valueTuple.Item1);
@@ -86,7 +86,7 @@ namespace CodeDomDynamicGeneratorTests
 
 			var reflectedInstance = new CDReflectedInstance(toBeReflected);
 
-			var propertyList = reflectedInstance.propertyValues;
+			var propertyList = reflectedInstance.GetPropertyValues();
 			Assert.True(propertyList.ContainsKey(expectedName));
 			var valueTuple = propertyList[expectedName];
 			Assert.Equal(expectedType, valueTuple.Item1);
@@ -103,7 +103,7 @@ namespace CodeDomDynamicGeneratorTests
 
 			var reflectedInstance = new CDReflectedInstance(toBeReflected);
 
-			var propertyList = reflectedInstance.propertyValues;
+			var propertyList = reflectedInstance.GetPropertyValues();
 			Assert.False(propertyList.ContainsKey("PrivateSetterProp"));
 			Assert.False(propertyList.ContainsKey("PrivateGetterProp"));
 		}
@@ -118,7 +118,7 @@ namespace CodeDomDynamicGeneratorTests
 
 			var reflectedInstance = new CDReflectedInstance(toBeReflected);
 
-			var propertyList = reflectedInstance.propertyValues;
+			var propertyList = reflectedInstance.GetPropertyValues();
 			Assert.False(propertyList.ContainsKey("ListProp"));
 
 		}
@@ -130,7 +130,7 @@ namespace CodeDomDynamicGeneratorTests
 
 			var reflectedInstance = new CDReflectedInstance(toBeReflected);
 
-			var propertyList = reflectedInstance.propertyValues;
+			var propertyList = reflectedInstance.GetPropertyValues();
 			Assert.False(propertyList.ContainsKey("DoubleProp"));
 
 		}

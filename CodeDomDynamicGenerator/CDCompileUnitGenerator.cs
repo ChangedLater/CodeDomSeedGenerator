@@ -1,8 +1,10 @@
-﻿using System;
+﻿using CodeDomDynamicGenerator.Interfaces;
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -33,7 +35,7 @@ namespace CodeDomDynamicGenerator
 			return targetClass;
 		}
 
-		public void AddImports(string[] imports)
+		public void AddImports(IEnumerable<string> imports)
 		{
 			foreach( var import in imports)
 			{
@@ -41,7 +43,7 @@ namespace CodeDomDynamicGenerator
 			}
 		}
 
-		private void AddStatementsToMain(List<CodeStatement> statements)
+		private void AddStatementsToMain(IEnumerable<CodeStatement> statements)
 		{
 			if (statements != null)
 			{
@@ -49,13 +51,13 @@ namespace CodeDomDynamicGenerator
 			}
 		}
 
-		public void AddInstance(CDInstanceGenerator instanceGen)
+		public void AddInstance(ICDInstanceGenerator instanceGen)
 		{
-			AddStatementsToMain(instanceGen.statements);
-			AddImports(instanceGen.imports.ToArray());
+			AddStatementsToMain(instanceGen.GetStatements());
+			AddImports(instanceGen.GetImports());
 		}
 
-		public void AddEntryPoint(CodeTypeDeclaration targetClass, List<CodeStatement> statements = null)
+		public void AddEntryPoint(CodeTypeDeclaration targetClass, IEnumerable<CodeStatement> statements = null)
 		{
 			mainMethod = new CodeEntryPointMethod();
 			AddStatementsToMain(statements);

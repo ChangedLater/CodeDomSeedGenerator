@@ -3,6 +3,7 @@ using System.IO;
 using Xunit;
 using CodeDomDynamicGenerator;
 using System.CodeDom;
+using System.Linq;
 
 namespace CodeDomDynamicGeneratorTests
 {
@@ -21,7 +22,7 @@ namespace CodeDomDynamicGeneratorTests
 		public void CDInstanceGenerator_Constructor_StatementsNotEmpty()
 		{
 			var instance = new CDInstanceGenerator(className, instanceName);
-			var actual = instance.statements;
+			var actual = instance.GetStatements();
 			Assert.NotEmpty(actual);
 		}
 
@@ -29,8 +30,8 @@ namespace CodeDomDynamicGeneratorTests
 		public void CDInstanceGenerator_Constructor_StatementsOfTypeCodeVariableDeclarationStatement()
 		{
 			var instance = new CDInstanceGenerator(className, instanceName);
-			var actual = instance.statements;
-			Assert.IsType<CodeVariableDeclarationStatement>(actual[0]);
+			var actual = instance.GetStatements();
+			Assert.IsType<CodeVariableDeclarationStatement>(actual.First());
 		}
 
 		[Fact]
