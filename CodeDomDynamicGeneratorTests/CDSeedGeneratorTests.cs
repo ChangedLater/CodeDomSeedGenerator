@@ -45,7 +45,7 @@ namespace CodeDomDynamicGeneratorTests
 		}
 
 		[Fact]
-		public void CDSeedGenerator_AddClass_ContainsClass()
+		public void CDSeedGenerator_Constructor_ContainsClass()
 		{
 			var expectedContents = $"public sealed class {className}";
 
@@ -59,6 +59,18 @@ namespace CodeDomDynamicGeneratorTests
 		public void CDSeedGenerator_AddSeedData_CreatesMethod()
 		{
 			var expectedContents = "public static System.Collections.Generic.IEnumerable<CodeDomDynamicGeneratorTests.TestClass> GenerateSeedData()";
+
+			var cdCompile = new CDSeedGenerator(nameSpace, className);
+			cdCompile.AddSeedData(testData);
+
+			var actual = WriteCompileUnitContents(cdCompile);
+			Assert.Contains(expectedContents, actual);
+		}
+
+		[Fact]
+		public void CDSeedGenerator_AddSeedData_ImportsNamespaceOfSeedType()
+		{
+			var expectedContents = $"using {testData[1].GetType().Namespace};";
 
 			var cdCompile = new CDSeedGenerator(nameSpace, className);
 			cdCompile.AddSeedData(testData);

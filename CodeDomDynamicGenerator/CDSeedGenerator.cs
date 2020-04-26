@@ -39,13 +39,16 @@ namespace CodeDomDynamicGenerator
 		public void AddSeedData<T>(IEnumerable<T> seedList)
 			where T : class
 		{
+			var targetType = typeof(T);
 			// if we havent added a seed method for this type yet do so now
-			if (!seedMethodsForType.ContainsKey(typeof(T)))
+			if (!seedMethodsForType.ContainsKey(targetType))
 			{
 				CreateSeedMethod<T>();
+				var nameSpace = targetType.Namespace;
+				AddImport(nameSpace);
 			}
 			//Now add the data seed to that method
-			var targetMethodContainer = seedMethodsForType[typeof(T)];
+			var targetMethodContainer = seedMethodsForType[targetType];
 			//targetMethodContainer
 			foreach (var itemToSeed in seedList)
 			{
@@ -88,8 +91,13 @@ namespace CodeDomDynamicGenerator
 		{
 			foreach( var import in imports)
 			{
-				codeNamespace.Imports.Add(new CodeNamespaceImport(import));
+				AddImport(import);
 			}
+		}
+
+		private void AddImport(string import)
+		{
+			codeNamespace.Imports.Add(new CodeNamespaceImport(import));
 		}
 
 		private void AddStatementsToMain(IEnumerable<CodeStatement> statements)

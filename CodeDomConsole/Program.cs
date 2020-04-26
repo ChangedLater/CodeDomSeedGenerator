@@ -58,7 +58,7 @@ namespace CodeDomConsole
 		}
 	}
 
-	class ClassWithProps
+	public class ClassWithProps
 	{
 		public int IntProperty { get; set; }
 		public EnumValues EnumProperty { get; set; }
@@ -67,7 +67,7 @@ namespace CodeDomConsole
 }
 namespace OtherNameSpace
 {
-	enum EnumValues
+	public enum EnumValues
 	{
 		Value1,
 		Value2
