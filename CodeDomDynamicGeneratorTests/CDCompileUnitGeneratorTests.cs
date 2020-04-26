@@ -1,7 +1,6 @@
 using CodeDomDynamicGenerator;
 using CodeDomDynamicGenerator.Interfaces;
 using Moq;
-using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
@@ -94,7 +93,7 @@ namespace CodeDomDynamicGeneratorTests
 			);
 
 			var mockedInstanceGenerator = new Mock<ICDInstanceGenerator>();
-			mockedInstanceGenerator.Setup(instGen => instGen.GetStatements())
+			mockedInstanceGenerator.Setup(instGen => instGen.CodeStatements)
 				// return the code declaration above
 				.Returns( new List<CodeStatement>() { declaration } );
 
@@ -117,7 +116,7 @@ namespace CodeDomDynamicGeneratorTests
 			cdCompile.AddEntryPoint(targetClass);
 
 			var mockedInstanceGenerator = new Mock<ICDInstanceGenerator>();
-			mockedInstanceGenerator.Setup(instGen => instGen.GetImports())
+			mockedInstanceGenerator.Setup(instGen => instGen.Imports)
 				// return a string for a namespace
 				.Returns(new List<string>() { nameSpace });
 

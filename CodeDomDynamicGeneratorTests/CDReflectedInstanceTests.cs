@@ -1,7 +1,6 @@
 ﻿using CodeDomDynamicGenerator;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace CodeDomDynamicGeneratorTests
@@ -28,8 +27,8 @@ namespace CodeDomDynamicGeneratorTests
 
 			var reflectedInstance = new CDReflectedInstance(toBeReflected);
 
-			Assert.Equal(expectedType.Name, reflectedInstance.GetClassName());
-			Assert.Equal(expectedType.Namespace, reflectedInstance.GetNameSpace());
+			Assert.Equal(expectedType.Name, reflectedInstance.ClassName);
+			Assert.Equal(expectedType.Namespace, reflectedInstance.NameSpace);
 		}
 
 		[Fact]
@@ -67,9 +66,9 @@ namespace CodeDomDynamicGeneratorTests
 
 			var propertyList = reflectedInstance.GetPropertyValues();
 			Assert.True(propertyList.ContainsKey(expectedName));
-			var valueTuple = propertyList[expectedName];
-			Assert.Equal(expectedType, valueTuple.Item1);
-			Assert.Equal(expectedValue, valueTuple.Item2);
+			var propValue = propertyList[expectedName];
+			Assert.Equal(expectedType, propValue.PropType);
+			Assert.Equal(expectedValue, propValue.PropValue);
 		}
 
 		[Fact]
@@ -88,9 +87,9 @@ namespace CodeDomDynamicGeneratorTests
 
 			var propertyList = reflectedInstance.GetPropertyValues();
 			Assert.True(propertyList.ContainsKey(expectedName));
-			var valueTuple = propertyList[expectedName];
-			Assert.Equal(expectedType, valueTuple.Item1);
-			Assert.Equal(expectedValue, valueTuple.Item2);
+			var propValue = propertyList[expectedName];
+			Assert.Equal(expectedType, propValue.PropType);
+			Assert.Equal(expectedValue, propValue.PropValue);
 		}
 
 		[Fact]

@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Xunit;
+﻿using Xunit;
 using CodeDomDynamicGenerator;
 using System.CodeDom;
 using System.Linq;
@@ -27,7 +25,7 @@ namespace CodeDomDynamicGeneratorTests
 		public void CDInstanceGenerator_Constructor_StatementsNotEmpty()
 		{
 			var instance = new CDInstanceGenerator(className, instanceName);
-			var actual = instance.GetStatements();
+			var actual = instance.CodeStatements;
 			Assert.NotEmpty(actual);
 		}
 
@@ -35,7 +33,7 @@ namespace CodeDomDynamicGeneratorTests
 		public void CDInstanceGenerator_Constructor_StatementsOfTypeCodeVariableDeclarationStatement()
 		{
 			var instance = new CDInstanceGenerator(className, instanceName);
-			var actual = instance.GetStatements();
+			var actual = instance.CodeStatements;
 			Assert.IsType<CodeVariableDeclarationStatement>(actual.First());
 		}
 
@@ -68,11 +66,11 @@ namespace CodeDomDynamicGeneratorTests
 		{
 			var mockedReflectedInstance = new Mock<ICDReflectedInstance>();
 			// classname returned
-			mockedReflectedInstance.Setup(reflected => reflected.GetClassName())
+			mockedReflectedInstance.Setup(reflected => reflected.ClassName)
 				.Returns(className);
 			// return an empty dictionary for this test
-			mockedReflectedInstance.Setup(reflected => reflected.GetPropertyValues())
-				.Returns(new Dictionary<string, Tuple<Type, object>>());
+			mockedReflectedInstance.Setup(reflected => reflected.PropertyValues)
+				.Returns(new Dictionary<string, CDPropertyValue>());
 			new CDInstanceGenerator(mockedReflectedInstance.Object);
 		}
 
@@ -81,15 +79,15 @@ namespace CodeDomDynamicGeneratorTests
 		{
 			var mockedReflectedInstance = new Mock<ICDReflectedInstance>();
 			// classname returned
-			mockedReflectedInstance.Setup(reflected => reflected.GetClassName())
+			mockedReflectedInstance.Setup(reflected => reflected.ClassName)
 				.Returns(className);
 			// return an empty dictionary for this test
-			mockedReflectedInstance.Setup(reflected => reflected.GetPropertyValues())
-				.Returns(new Dictionary<string, Tuple<Type, object>>());
+			mockedReflectedInstance.Setup(reflected => reflected.PropertyValues)
+				.Returns(new Dictionary<string, CDPropertyValue>());
 
 			var instance = new CDInstanceGenerator(mockedReflectedInstance.Object);
 
-			var actual = instance.GetStatements();
+			var actual = instance.CodeStatements;
 			Assert.IsType<CodeVariableDeclarationStatement>(actual.First());
 		}
 
@@ -98,18 +96,18 @@ namespace CodeDomDynamicGeneratorTests
 		{
 			var mockedReflectedInstance = new Mock<ICDReflectedInstance>();
 			// classname returned
-			mockedReflectedInstance.Setup(reflected => reflected.GetClassName())
+			mockedReflectedInstance.Setup(reflected => reflected.ClassName)
 				.Returns(className);
 			// return an empty dictionary for this test
-			mockedReflectedInstance.Setup(reflected => reflected.GetPropertyValues())
-				.Returns(new Dictionary<string, Tuple<Type, object>>()
+			mockedReflectedInstance.Setup(reflected => reflected.PropertyValues)
+				.Returns(new Dictionary<string, CDPropertyValue>()
 				{
-					{ propName, new Tuple<Type,object>(propValue.GetType(), propValue) }
+					{ propName, new CDPropertyValue(propValue.GetType(), propValue) }
 				});
 
 			var instance = new CDInstanceGenerator(mockedReflectedInstance.Object);
 
-			var assignStatements = instance.GetStatements().Where( statement => statement is CodeAssignStatement);
+			var assignStatements = instance.CodeStatements.Where( statement => statement is CodeAssignStatement);
 			Assert.NotEmpty(assignStatements);
 			var assignStatement = assignStatements.First() as CodeAssignStatement;
 

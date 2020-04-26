@@ -1,8 +1,5 @@
 ﻿using CodeDomDynamicGenerator;
 using OtherNameSpace;
-using System;
-using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 
@@ -48,7 +45,7 @@ namespace CodeDomConsole
 			var instanceGen = new CDInstanceGenerator("TestClass", "test");
 			instanceGen.CreatePropertyAssignment("Value", 2.0);
 
-			compileUnit.AddEntryPoint(target, instanceGen.GetStatements());
+			compileUnit.AddEntryPoint(target, instanceGen.CodeStatements);
 
 			string fileName = GetPathForClass(className);
 			using (var sw = new StreamWriter(fileName))

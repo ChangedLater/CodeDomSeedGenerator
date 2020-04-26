@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 [assembly: InternalsVisibleTo("CodeDomDynamicGeneratorTests")]
 [assembly: InternalsVisibleTo("CodeDomConsole")]
@@ -16,23 +15,23 @@ namespace CodeDomDynamicGenerator
 
 	internal class CDReflectedInstance : ICDReflectedInstance
 	{
-		private string className { get; set; }
-		private string nameSpace { get; set; }
+		public string ClassName { get; private set; }
+		public string NameSpace { get; private set; }
 		/// <summary>
 		/// Dictionary mapping propery Name to its type and Value.
 		/// </summary>
-		private Dictionary<string, Tuple<Type, object>> propertyValues;
+		public Dictionary<string, CDPropertyValue> PropertyValues { get; private set; }
 		internal CDReflectedInstance(object objectToReflect)
 		{
-			propertyValues = new Dictionary<string, Tuple<Type, object>>();
+			PropertyValues = new Dictionary<string, CDPropertyValue>();
 			ReflectInstance(objectToReflect);
 		}
 
 		private void ReflectInstance(object objectToReflect)
 		{
 			var typeOfObject = objectToReflect.GetType();
-			className = typeOfObject.Name;
-			nameSpace = typeOfObject.Namespace;
+			ClassName = typeOfObject.Name;
+			NameSpace = typeOfObject.Namespace;
 			foreach( var prop in typeOfObject.GetProperties())
 			{
 				// dont write this property if its not primitive(ish)
@@ -90,24 +89,14 @@ namespace CodeDomDynamicGenerator
 				&& hasPublicAccessors;
 		}
 
-		private void AddProperty(string propertyName, Type t, object value)
+		private void AddProperty(string propertyName, Type propertyType, object propertyValue)
 		{
-			propertyValues.Add(propertyName, new Tuple<Type, object>( t, value));
+			PropertyValues.Add(propertyName, new CDPropertyValue( propertyType, propertyValue));
 		}
 
-		public string GetClassName()
+		public Dictionary<string, CDPropertyValue> GetPropertyValues()
 		{
-			return className;
-		}
-
-		public string GetNameSpace()
-		{
-			return nameSpace;
-		}
-
-		public Dictionary<string, Tuple<Type, object>> GetPropertyValues()
-		{
-			return propertyValues;
+			return PropertyValues;
 		}
 	}
 }

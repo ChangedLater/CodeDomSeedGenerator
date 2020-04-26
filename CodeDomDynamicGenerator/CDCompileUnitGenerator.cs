@@ -1,12 +1,10 @@
 ﻿using CodeDomDynamicGenerator.Interfaces;
-using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace CodeDomDynamicGenerator
 {
@@ -53,8 +51,8 @@ namespace CodeDomDynamicGenerator
 
 		public void AddInstance(ICDInstanceGenerator instanceGen)
 		{
-			AddStatementsToMain(instanceGen.GetStatements());
-			AddImports(instanceGen.GetImports());
+			AddStatementsToMain(instanceGen.CodeStatements);
+			AddImports(instanceGen.Imports);
 		}
 
 		public void AddEntryPoint(CodeTypeDeclaration targetClass, IEnumerable<CodeStatement> statements = null)

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace CodeDomDynamicGenerator.Interfaces
 {
@@ -9,14 +7,14 @@ namespace CodeDomDynamicGenerator.Interfaces
 		/// <summary>
 		/// The Class of the instance being reflected 
 		/// </summary>
-		string GetClassName();
+		string ClassName { get; }
 		/// <summary>
 		/// The namespace containing the class of the instance being reflected 
 		/// </summary>
-		string GetNameSpace();
+		string NameSpace { get; }
 		/// <summary>
 		/// Dictionary mapping propery Name to its type and Value.
 		/// </summary>
-		Dictionary<string, Tuple<Type, object>> GetPropertyValues();
+		Dictionary<string, CDPropertyValue> PropertyValues { get; }
 	}
 }

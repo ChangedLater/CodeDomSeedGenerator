@@ -1,7 +1,6 @@
 ﻿using CodeDomDynamicGenerator.Interfaces;
 using System;
 using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
 namespace CodeDomDynamicGenerator
@@ -14,6 +13,9 @@ namespace CodeDomDynamicGenerator
 		private List<CodeStatement> statements { get; set; }
 		private List<string> imports { get; set; }
 
+		public IEnumerable<CodeStatement> CodeStatements { get { return statements; } }
+		public IEnumerable<string> Imports { get { return imports; } }
+
 		internal CDInstanceGenerator(string className, string instanceName) : this()
 		{
 			this.className = className;
@@ -23,23 +25,22 @@ namespace CodeDomDynamicGenerator
 
 		internal CDInstanceGenerator(ICDReflectedInstance instanceToGenerate) : this()
 		{
-			className = instanceToGenerate.GetClassName();
+			className = instanceToGenerate.ClassName;
 			// unique instance name
 			this.instanceName = className.ToLower() + (instanceCounter++);
 			CreateInstance();
-			imports.Add(instanceToGenerate.GetClassName());
+			imports.Add(instanceToGenerate.ClassName);
 
-			foreach( var prop in instanceToGenerate.GetPropertyValues())
+			var properties = instanceToGenerate.PropertyValues;
+			foreach ( var prop in properties )
 			{
 				var propName = prop.Key;
-				var propValue = prop.Value.Item2;
-				var propType = prop.Value.Item1;
+				var propType = prop.Value.PropType;
+				var propValue = prop.Value.PropValue;
 				dynamic typedPropValue = Convert.ChangeType(propValue, propType);
 				_ = CreatePropertyAssignment(prop.Key, typedPropValue);
 			}
 		}
-
-		//private T ConvertType
 
 		private CDInstanceGenerator()
 		{
@@ -94,16 +95,6 @@ namespace CodeDomDynamicGenerator
 			);
 			statements.Add(assignmentStatement);
 			return assignmentStatement;
-		}
-
-		public IEnumerable<CodeStatement> GetStatements()
-		{
-			return statements;
-		}
-
-		public IEnumerable<string> GetImports()
-		{
-			return imports;
 		}
 	}
 }
