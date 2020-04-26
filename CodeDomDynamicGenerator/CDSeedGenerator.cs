@@ -10,14 +10,13 @@ using System.Reflection;
 namespace CodeDomDynamicGenerator
 {
 	/// <summary>
-	/// The main class for generating a string representing the code required to seed data
+	/// The main class for generating a string representing the code required to seed data.
+	/// The generated string should be a valid compiling C# file which return a list off all the data seeded.
 	/// 
-	/// In genral this class should be created and methods should be call in the following order
-	///		AddClass
-	///		AddMain
-	///		AddInstance
-	///		
-	///		WriteToStream
+	/// In general this class should be used as follows
+	///		var cdCompile = new CDSeedGenerator(nameSpace, className);
+	///		cdCompile.AddSeedData(testData);
+	///		cdCompileUnit.WriteToStream(targetStream);
 	/// </summary>
 	public class CDSeedGenerator
 	{
@@ -27,6 +26,11 @@ namespace CodeDomDynamicGenerator
 		private Dictionary<Type, SeedMethodContainer> seedMethodsForType;
 		private CodeTypeDeclaration targetClass;
 
+		/// <summary>
+		/// Create a seed generator object
+		/// </summary>
+		/// <param name="nameSpace">the namespace to be used in the resultant cs file</param>
+		/// <param name="className">the ClassName of the class containing seed method in the generated file</param>
 		public CDSeedGenerator(string nameSpace, string className)
 		{
 			seedMethodsForType = new Dictionary<Type, SeedMethodContainer>();
@@ -36,6 +40,13 @@ namespace CodeDomDynamicGenerator
 			targetClass = AddClass(className);
 		}
 
+		/// <summary>
+		/// Adds a method to seed all of the items in the given list
+		/// 
+		/// If this method is called multiple times with the same generic type all data will be added to the single method
+		/// </summary>
+		/// <typeparam name="T">The type of data to seed</typeparam>
+		/// <param name="seedList">the list of data to seed</param>
 		public void AddSeedData<T>(IEnumerable<T> seedList)
 			where T : class
 		{
@@ -64,6 +75,10 @@ namespace CodeDomDynamicGenerator
 			}
 		}
 
+		/// <summary>
+		/// Write all of the added seed data and a containing class to a stream
+		/// </summary>
+		/// <param name="writer">The target writer to write all of the C# code for seed to</param>
 		public void WriteToStream(TextWriter writer)
 		{
 			// this should be moved into a close out method as it should not be called twice
