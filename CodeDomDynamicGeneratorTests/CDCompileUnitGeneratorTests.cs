@@ -4,6 +4,7 @@ using Moq;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace CodeDomDynamicGeneratorTests
@@ -22,66 +23,60 @@ namespace CodeDomDynamicGeneratorTests
 		[Fact]
 		public void CDCompileUnitGenerator_WriteToStream_ContainsNamespace()
 		{
+			var expectedContents = $"namespace {nameSpace}";
+
 			var cdCompile = new CDCompileUnitGenerator(nameSpace);
-			using(StringWriter tw = new StringWriter())
-			{
-				cdCompile.WriteToStream(tw);
-				var actual = tw.ToString();
-				var expectedContents = $"namespace {nameSpace}";
-				Assert.Contains(expectedContents, actual);
-			}
+
+			var actual = WriteCompileUnitContents(cdCompile);
+			Assert.Contains(expectedContents, actual);
 		}
 
 		[Fact]
 		public void CDCompileUnitGenerator_AddClass_ContainsClass()
 		{
+			var expectedContents = $"public sealed class {className}";
+
 			var cdCompile = new CDCompileUnitGenerator(nameSpace);
 			cdCompile.AddClass(className);
-			using (StringWriter tw = new StringWriter())
-			{
-				cdCompile.WriteToStream(tw);
-				var actual = tw.ToString();
-				var expectedContents = $"public sealed class {className}";
-				Assert.Contains(expectedContents, actual);
-			}
+
+			var actual = WriteCompileUnitContents(cdCompile);
+			Assert.Contains(expectedContents, actual);
 		}
 
 		[Fact]
 		public void CDCompileUnitGenerator_AddImports_ContainsImports()
 		{
-			var cdCompile = new CDCompileUnitGenerator(nameSpace);
 			var imports = new string[] { "System", "System.IO" };
+			var expectedImports = imports.Select( import => $"using {import};").ToList();
+
+			var cdCompile = new CDCompileUnitGenerator(nameSpace);
 			cdCompile.AddImports(imports);
-			using (StringWriter tw = new StringWriter())
+
+			var actual = WriteCompileUnitContents(cdCompile);
+			foreach ( var expected in expectedImports )
 			{
-				cdCompile.WriteToStream(tw);
-				var actual = tw.ToString();
-				foreach( var import in imports)
-				{
-					var expectedContents = $"using {import};";
-					Assert.Contains(expectedContents, actual);
-				}
+				Assert.Contains(expected, actual);
 			}
 		}
 
 		[Fact]
 		public void CDCompileUnitGenerator_AddEntryPoint_ContainsMain()
 		{
+			var expectedContents = "public static void Main()";
+
 			var cdCompile = new CDCompileUnitGenerator(nameSpace);
 			var targetClass = cdCompile.AddClass(className);
 			cdCompile.AddEntryPoint(targetClass);
-			using (StringWriter tw = new StringWriter())
-			{
-				cdCompile.WriteToStream(tw);
-				var actual = tw.ToString();
-				var expectedContents = "public static void Main()";
-				Assert.Contains(expectedContents, actual);
-			}
+
+			var actual = WriteCompileUnitContents(cdCompile);
+			Assert.Contains(expectedContents, actual);
 		}
 
 		[Fact]
 		public void CDCompileUnitGenerator_AddInstance_ContainsInstance()
 		{
+			var expectedContents = $"new {className}()";
+
 			var cdCompile = new CDCompileUnitGenerator(nameSpace);
 			var targetClass = cdCompile.AddClass(className);
 			cdCompile.AddEntryPoint(targetClass);
@@ -99,18 +94,15 @@ namespace CodeDomDynamicGeneratorTests
 
 			cdCompile.AddInstance(mockedInstanceGenerator.Object);
 
-			using (StringWriter tw = new StringWriter())
-			{
-				cdCompile.WriteToStream(tw);
-				var actual = tw.ToString();
-				var expectedContents = $"new {className}()";
-				Assert.Contains(expectedContents, actual);
-			}
+			var actual = WriteCompileUnitContents(cdCompile);
+			Assert.Contains(expectedContents, actual);
 		}
 
 		[Fact]
 		public void CDCompileUnitGenerator_AddInstance_ContainsInstancesImports()
 		{
+			var expectedContents = $"using {nameSpace};";
+
 			var cdCompile = new CDCompileUnitGenerator(nameSpace);
 			var targetClass = cdCompile.AddClass(className);
 			cdCompile.AddEntryPoint(targetClass);
@@ -122,12 +114,16 @@ namespace CodeDomDynamicGeneratorTests
 
 			cdCompile.AddInstance(mockedInstanceGenerator.Object);
 
+			var actual = WriteCompileUnitContents(cdCompile);
+			Assert.Contains(expectedContents, actual);
+		}
+
+		private string WriteCompileUnitContents(CDCompileUnitGenerator cdCompileUnit)
+		{
 			using (StringWriter tw = new StringWriter())
 			{
-				cdCompile.WriteToStream(tw);
-				var actual = tw.ToString();
-				var expectedContents = $"using {nameSpace};";
-				Assert.Contains(expectedContents, actual);
+				cdCompileUnit.WriteToStream(tw);
+				return tw.ToString();
 			}
 		}
 	}

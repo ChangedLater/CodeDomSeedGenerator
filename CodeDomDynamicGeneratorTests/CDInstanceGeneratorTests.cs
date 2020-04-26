@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace CodeDomDynamicGeneratorTests
 {
-	public class CDInstanceGeneratorTest
+	public class CDInstanceGeneratorTests
 	{
 		private const string className = "ClassName";
 		private const string instanceName = "instance";
@@ -30,7 +30,7 @@ namespace CodeDomDynamicGeneratorTests
 		}
 
 		[Fact]
-		public void CDInstanceGenerator_Constructor_StatementsOfTypeCodeVariableDeclarationStatement()
+		public void CDInstanceGenerator_Constructor_FirstStatementIsOfType_CodeVariableDeclarationStatement()
 		{
 			var instance = new CDInstanceGenerator(className, instanceName);
 			var actual = instance.CodeStatements;
