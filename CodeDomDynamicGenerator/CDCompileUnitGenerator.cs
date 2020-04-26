@@ -8,6 +8,16 @@ using System.Reflection;
 
 namespace CodeDomDynamicGenerator
 {
+	/// <summary>
+	/// The main class for generating a string representing the code required to seed data
+	/// 
+	/// In genral this class should be created and methods should be call in the following order
+	///		AddClass
+	///		AddMain
+	///		AddInstance
+	///		
+	///		WriteToStream
+	/// </summary>
 	public class CDCompileUnitGenerator
 	{
 		private CodeCompileUnit targetUnit;

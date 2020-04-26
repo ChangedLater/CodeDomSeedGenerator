@@ -5,6 +5,12 @@ using System.Collections.Generic;
 
 namespace CodeDomDynamicGenerator
 {
+	/// <summary>
+	/// A class which generates the code statements required to generate an instance
+	/// 
+	/// This class is intended to be used with an ICDReflectedInstance.
+	/// The properties on the interface will be turned into the required code statements and necessary imports will be added added
+	/// </summary>
 	internal class CDInstanceGenerator : ICDInstanceGenerator
 	{
 		private static int instanceCounter = 0;
@@ -23,6 +29,10 @@ namespace CodeDomDynamicGenerator
 			CreateInstance();
 		}
 
+		/// <summary>
+		/// Create an instance generator and the necessary code statements for the ReflectedInstance argument
+		/// </summary>
+		/// <param name="instanceToGenerate">The reflected instance to generate the code statements for</param>
 		internal CDInstanceGenerator(ICDReflectedInstance instanceToGenerate) : this()
 		{
 			className = instanceToGenerate.ClassName;

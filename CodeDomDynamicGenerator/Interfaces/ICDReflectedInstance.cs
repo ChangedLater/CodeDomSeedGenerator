@@ -2,6 +2,11 @@
 
 namespace CodeDomDynamicGenerator.Interfaces
 {
+	/// <summary>
+	/// An interface mapping the extracted information when reflecting an instance
+	/// 
+	/// This is intended to represent the data required to build the code to recreate an instance as seeded data
+	/// </summary>
 	public interface ICDReflectedInstance
 	{
 		/// <summary>

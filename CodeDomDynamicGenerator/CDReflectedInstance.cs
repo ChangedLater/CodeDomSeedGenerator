@@ -12,7 +12,6 @@ namespace CodeDomDynamicGenerator
 	/// This class is intended to extract the required information from an object to 
 	/// enable creation of that object via CodeDom
 	/// </summary>
-
 	internal class CDReflectedInstance : ICDReflectedInstance
 	{
 		public string ClassName { get; private set; }
