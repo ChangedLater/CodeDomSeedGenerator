@@ -17,10 +17,12 @@ namespace CodeDomDynamicGenerator
 		private string className;
 		private string instanceName;
 		private List<CodeStatement> statements { get; set; }
-		private List<string> imports { get; set; }
+		private List<string> imports { get; set; }	
 
 		public IEnumerable<CodeStatement> CodeStatements { get { return statements; } }
 		public IEnumerable<string> Imports { get { return imports; } }
+
+		public CodeVariableReferenceExpression ReflectedReference { get; private set; }
 
 		internal CDInstanceGenerator(string className, string instanceName) : this()
 		{
@@ -69,14 +71,14 @@ namespace CodeDomDynamicGenerator
 				new CodeTypeReference(className), instanceName,
 				objectCreate);
 			statements.Add(declaration);
+
+			ReflectedReference = new CodeVariableReferenceExpression(instanceName);
 		}
 
 		internal CodeAssignStatement CreatePropertyAssignment(string propertyName, object value)
 		{
-			var variableReference = new CodeVariableReferenceExpression(instanceName);
-	
 			var propReference = new CodeFieldReferenceExpression(
-					variableReference, propertyName
+					ReflectedReference, propertyName
 				);
 			// assigning flag enums to be handled as integers
 			var valueType = value.GetType();

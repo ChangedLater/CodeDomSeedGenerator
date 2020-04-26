@@ -1,5 +1,6 @@
 ﻿using CodeDomDynamicGenerator;
 using OtherNameSpace;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -10,42 +11,32 @@ namespace CodeDomConsole
 
 		static void Main(string[] args)
 		{
+			GenerateFromList();
+		}
+
+		static void GenerateFromList()
+		{
 			var sample = new ClassWithProps()
 			{
 				EnumProperty = EnumValues.Value2,
 				IntProperty = 4
 			};
-			var reflectedInstance = new CDReflectedInstance(sample);
-
-			var instanceGen = new CDInstanceGenerator(reflectedInstance);
-
-			var compileUnit = new CDCompileUnitGenerator("SampleNameSpace");
-			compileUnit.AddImports(new string[] { "System" });
-
-			var className = "TestClass";
-			var targetDeclaration = compileUnit.AddClass(className);
-
-			compileUnit.AddEntryPoint(targetDeclaration);
-			compileUnit.AddInstance(instanceGen);
-
-			string fileName = GetPathForClass(className);
-			using (var sw = new StreamWriter(fileName))
+			var sample2 = new ClassWithProps()
 			{
-				compileUnit.WriteToStream(sw);
-			}
-		}
+				EnumProperty = EnumValues.Value2,
+				IntProperty = 4
+			};
 
-		static void GenerateInstanceCode()
-		{
+			var list = new List<ClassWithProps>()
+			{
+				sample, sample2
+			};
+
+			var nameSpace = "SampleNameSpace";
 			var className = "TestClass";
-			var compileUnit = new CDCompileUnitGenerator("SampleNamespace");
-			compileUnit.AddImports(new string[] { "System" });
-			var target = compileUnit.AddClass(className);
+			var compileUnit = new CDSeedGenerator(nameSpace, className);
 
-			var instanceGen = new CDInstanceGenerator("TestClass", "test");
-			instanceGen.CreatePropertyAssignment("Value", 2.0);
-
-			compileUnit.AddEntryPoint(target, instanceGen.CodeStatements);
+			compileUnit.AddSeedData(list);
 
 			string fileName = GetPathForClass(className);
 			using (var sw = new StreamWriter(fileName))
