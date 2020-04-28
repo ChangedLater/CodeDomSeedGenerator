@@ -2,7 +2,7 @@
 A library for generating seed data from in memory objects.
 
 # Sample usage
-CDSeedGenerator is currently the main target class. I can be used to generate a string which contains C# code which will recrate the list that has been added as seed data. The resultant class will have a method named GenerateSeedData that returns an ```IEnumerable<DataTypePassedIn>```
+CDSeedGenerator is currently the main target class. It can be used to generate a string which contains C# code which will recreate the list that has been added as seed data. The resultant class will have a method named GenerateSeedData that returns an ```IEnumerable<DataTypePassedIn>```
 
 ```
 List<SomeClass> testData = ...
